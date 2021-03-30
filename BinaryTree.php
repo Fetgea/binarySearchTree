@@ -113,7 +113,8 @@ class BinaryTree
      * @param BinaryTreeElement $treeElement starting element for counting, if not provided starts from the head of the tree
      * @return int Number of elements in the tree
      */
-    public function countTraversingReal(BinaryTreeElement $treeElement = null) {
+    public function countTraversingReal(BinaryTreeElement $treeElement = null)
+    {
         if ($treeElement === null) {
             $treeElement = $this->head;
         }
@@ -211,30 +212,7 @@ class BinaryTree
 
         return $min;
     }
-    
-    /**
-     * Breadth first traversal
-     *
-     * @return void Array of values Breadth First traversal order 
-     */
-    private function bfs()
-    {
-        $queue = [];
-        $values = [];
-        $queue[] = $this->head;
 
-        while (count($queue) > 0) {
-            $tempTree = array_shift($queue);
-            $values[] = $tempTree->value;
-            if (!empty($tempTree->leftBranch)) {
-                $queue[] = $tempTree->leftBranch;
-            }
-            if (!empty($tempTree->rightBranch)) {
-                $queue[] = $tempTree->rightBranch;
-            }
-        }
-        return $values;
-    }
     /**
      * Functions generates HTML markup for tree visualisation 
      *
