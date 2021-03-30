@@ -9,17 +9,12 @@ use Dinar\NewClass\BinaryTreeExperiments\BinaryTree;
 $object = new BinaryTree();
 $object->add(14);
 $object->add(6);
-
 $object->add(7);
-
 $object->add(2);
-
 $object->add(3);
 $object->add(15);
 $object->add(8);
-
 $object->add(23);
-
 $object->add(12);
 $object->add(9);
 $object->add(10);
@@ -27,22 +22,37 @@ $object->add(1);
 $object->add(40);
 $object->add(24);
 $object->add(13);
+$object->add(120);
+$object->add(13);
+//$object->deleteElement(13);
+
+
+
 $object->deleteElement(12);
-echo "<br>";
-//var_dump($object->containsValueTraversing(9));
+$object->deleteElement(1);
 
-//var_dump($object->containsValueTraversing(3));
 echo "<br>";
-//var_dump($object->countTraversing());
-//$object->treeTraversalUsable();
-//var_dump($object->bfsPublic());
-//$object->deleteElement(2);
-//$object->treeTraversalUsable();
-//$minimal = $object->findMin();
-//var_dump($minimal);
+if ($object->containsValueTraversing(40)) {
+  echo "Значение присутствует в дереве";
+} else {
+  echo "Значения в дереве нет"; 
+}
+var_dump($object->containsValueTraversing(9));
+echo "<br>";
+echo "Минимальное значение в дереве ";
+var_dump($object->findMinReal());
+$object->deleteElement(2);
 
-//$object->check();
+var_dump($object->findMinReal());
+$object->add(1);
+
+var_dump($object->findMinReal());
+
+
+echo "<br>";
+var_dump($object->countTraversingReal());
 ?>
+
 <!doctype html>
 <html lang="ru">
 <head>

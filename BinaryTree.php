@@ -25,11 +25,10 @@ class BinaryTree
     {
         if (empty($this->head)) {
             $newHead = new BinaryTreeElement($addedValue);
-            $this->head = &$newHead;
+            $this->head = $newHead;
         } else {
             $this->addNewElement($this->head, $addedValue);
         }
-
     }
     /**
      * Adds new element to the tree
@@ -40,7 +39,9 @@ class BinaryTree
      */
     private function addNewElement(BinaryTreeElement $treeElement, $addedValue)
     {
-        //var_dump($treeElement);
+        if ($this->containsValueTraversing($addedValue)) {
+            return;
+        }
         if ($treeElement->value <= $addedValue) {
             if (empty($treeElement->rightBranch)) {
                 $treeElement->rightBranch = new BinaryTreeElement($addedValue);
@@ -55,17 +56,14 @@ class BinaryTree
             }
         }
     }
-    
-    public function treeTraversalUsable()
-    {
-        echo "<pre>";
-        var_dump($this->treeTraversal($this->head));
-        echo "</pre>";
-    }
-
+    /**
+     * Return associative arrays of all tree elements 
+     *
+     * @param BinaryTreeElement $treeElement
+     * @return void
+     */
     public function treeTraversal(BinaryTreeElement $treeElement = null)
     {
-          
         if ($treeElement === null) {
             $treeElement = $this->head;
         }
@@ -106,29 +104,33 @@ class BinaryTree
                 return true;
             }
         }
-        //return $result;
+        return null;
     }
+
     /**
-     * Method counting number of elements in the tree
+     * Method returns number of elements in the tree
      *
      * @param BinaryTreeElement $treeElement starting element for counting, if not provided starts from the head of the tree
      * @return int Number of elements in the tree
      */
-    public function countTraversing(BinaryTreeElement $treeElement = null) {
+    public function countTraversingReal(BinaryTreeElement $treeElement = null) {
         if ($treeElement === null) {
             $treeElement = $this->head;
         }
-        static $counter = 0;
+        $counter = 0;
         if (!empty($treeElement->leftBranch)) {
-            $this->countTraversing($treeElement->leftBranch);
+            $result = $this->countTraversingReal($treeElement->leftBranch);
+            $counter += $result;
         }
-        $counter++;     
+        $counter += 1;
         if (!empty($treeElement->rightBranch)) {
-            $this->countTraversing($treeElement->rightBranch);
+            $result = $this->countTraversingReal($treeElement->rightBranch);
+            $counter += $result;
         }
         return $counter;
-
     }
+
+    
     /**
      * Deletes element with value provided
      *
@@ -154,7 +156,7 @@ class BinaryTree
                 unset($treeElement->value);
                 return true;
             } elseif (!empty($treeElement->leftBranch) && !empty($treeElement->rightBranch)) {
-                $minimal = $this->findMin($treeElement->rightBranch);
+                $minimal = $this->findMinReal($treeElement->rightBranch);
                 $result = $this->deleteElement($minimal, $treeElement->rightBranch);
                 if ($result === true) {
                     unset($treeElement->rightBranch);
@@ -177,41 +179,49 @@ class BinaryTree
         }
         return;
     }
+
     /**
-     * Function returns minimal element of binary tree
+     * Undocumented function
      *
-     * @param BinaryTreeElement $treeElement starting element of the tree, if not provided starts from the head of the tree
-     * @return void value of minimal element of the tree;
+     * @param BinaryTreeElement $treeElement BinaryTreeElement object where value must be found
+     * @param integer $currentMin secondary parameter for recursive function functionality. 
+     * @return int Minimal element value of the tree
      */
-    public function findMin(BinaryTreeElement $treeElement = null)
+    public function findMinReal(BinaryTreeElement $treeElement = null, $currentMin = 9999999)
     {
-        static $min = 999999999;
+        $min = $currentMin;
         if ($treeElement === null) {
             $treeElement = $this->head;
         }
         if (!empty($treeElement->leftBranch)) {
-            $this->findMin($treeElement->leftBranch);
+            $resultLeft = $this->findMinReal($treeElement->leftBranch, $currentMin);
+        }
+        if (!empty($treeElement->rightBranch)) {
+            $resultRight = $this->findMinReal($treeElement->rightBranch, $currentMin);
+        }
+        if (isset($resultRight) && $resultRight < $min) {
+            $min = $resultRight;
+        }
+        if (isset($resultLeft) && $resultLeft < $min) {
+            $min = $resultLeft;
         }
         if ($treeElement->value < $min) {
             $min = $treeElement->value;
         }
-        if (!empty($treeElement->rightBranch)) {
-            $this->findMin($treeElement->rightBranch);
-        }
+
         return $min;
     }
-    public function bfsPublic()
-    {
-        return $this->bfs($this->head);
-        
-    }
     
-
-    private function bfs(BinaryTreeElement $treeElement)
+    /**
+     * Breadth first traversal
+     *
+     * @return void Array of values Breadth First traversal order 
+     */
+    private function bfs()
     {
         $queue = [];
         $values = [];
-        $queue[] = $treeElement;
+        $queue[] = $this->head;
 
         while (count($queue) > 0) {
             $tempTree = array_shift($queue);
@@ -225,19 +235,29 @@ class BinaryTree
         }
         return $values;
     }
-
+    /**
+     * Functions generates HTML markup for tree visualisation 
+     *
+     * @param array $treeArray array generated by treeTraversal method
+     * @return string Ready to use HTML markup.
+     */
     public function drawTree($treeArray)
     {
-        //$result = "<div class='parent'>";
-        static $level = 0;
-        if ($level == 0) {
-            $result = "<div class='tf-tree'><ul><li class='head'>";
-            $endSuffix = "</li></ul></div>";
-        } else {
-            $result = "";
-            $endSuffix = "";
-        }
-        $level++;
+        $result = "<div class='tf-tree'><ul><li class='head'>";
+        $result .= $this->drawTreeRecursive($treeArray);
+        $result .= "</li></ul></div>";
+        return $result;
+    }
+    /**
+     * Functions generates HTML markup without opening div, ul tags
+     *
+     * @param array $treeArray array generated by treeTraversal method
+     * @return string String containing html markup. 
+     */
+    private function drawTreeRecursive($treeArray)
+    {
+        $result = "";
+
         foreach ($treeArray as $key => $branches) {
             switch ($key) {
                 case "value":
@@ -247,36 +267,20 @@ class BinaryTree
                     }
                     break;
                 case "leftBranch":
-                    $result .= "<ul><li class='leftBranch'>" . $this->drawTree($branches) . "</li>";
+                    $result .= "<ul><li class='leftBranch'>" . $this->drawTreeRecursive($branches) . "</li>";
                     if (!isset($treeArray["rightBranch"])) {
                         $result .= "<li class='rightBranch empty'><span class='tf-nc'>Empty</span></li></ul>";
                     }
                     break;
                 case "rightBranch";
                     if (isset($treeArray["leftBranch"])) {
-                        $result .= "<li class='rightBranch'>" . $this->drawTree($branches) . "</li></ul>";
+                        $result .= "<li class='rightBranch'>" . $this->drawTreeRecursive($branches) . "</li></ul>";
                     } else {
-                        $result .= "<ul><li class='leftBranch empty'><span class='tf-nc'>Empty</span></li><li class='rightBranch'>" . $this->drawTree($branches) . "</li></ul>";
+                        $result .= "<ul><li class='leftBranch empty'><span class='tf-nc'>Empty</span></li><li class='rightBranch'>" . $this->drawTreeRecursive($branches) . "</li></ul>";
                     }
             }
         }
-        $result .= $endSuffix;
         return $result;
     }
-    public function treeTraversalAnother(BinaryTreeElement $treeElement = null)
-    {
-        if ($treeElement === null) {
-            $treeElement = $this->head;
-        }
-        $result[] = $treeElement->value;
-        if (!empty($treeElement->leftBranch)) {
-            $result[] = $this->treeTraversal($treeElement->leftBranch);
-        }
-        if (!empty($treeElement->rightBranch)) {
-            $result[] = $this->treeTraversal($treeElement->rightBranch);
-        }
-        return $result;
-    }
-
 }
 
