@@ -5,13 +5,21 @@ require "./BinaryTreeElement.php";
 use Dinar\NewClass\BinaryTreeExperiments\BinaryTreeElement;
 use Dinar\NewClass\BinaryTreeExperiments\BinaryTree;
 
+$find = 40;
+$delete = 2;
+
 
 $object = new BinaryTree();
 $object->add(14);
 $object->add(6);
 $object->add(7);
+
+
 $object->add(2);
 $object->add(3);
+echo "<pre>";
+print_r($object->treeTraversal());
+echo "</pre>";
 $object->add(15);
 $object->add(8);
 $object->add(23);
@@ -31,25 +39,24 @@ $object->add(13);
 $object->deleteElement(12);
 $object->deleteElement(1);
 
+echo "Поиск значения " . $find . " в дереве";
 echo "<br>";
-if ($object->containsValueTraversing(40)) {
+if ($object->containsValueTraversing($find)) {
   echo "Значение присутствует в дереве";
 } else {
   echo "Значения в дереве нет"; 
 }
-var_dump($object->containsValueTraversing(9));
 echo "<br>";
 echo "Минимальное значение в дереве ";
 var_dump($object->findMinReal());
-$object->deleteElement(2);
-
-var_dump($object->findMinReal());
-$object->add(1);
-
-var_dump($object->findMinReal());
-
-
 echo "<br>";
+echo "Удалил элемент с номером " . $delete;
+$object->deleteElement($delete);
+echo "<br>";
+echo "Минимальное значение в дереве ";
+var_dump($object->findMinReal());
+echo "<br>";
+echo "Количество элементов в дереве ";
 var_dump($object->countTraversingReal());
 ?>
 
