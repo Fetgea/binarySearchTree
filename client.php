@@ -39,36 +39,38 @@ $object->add(13);
 <body class="page_body">
  
 
-<pre>
-<?php print_r($object->treeTraversal());?>
-</pre>
-<div>
-Поиск значения <?= $find ?> в дереве<br>
-<?php 
-if ($object->containsValueTraversing($find)) {
-  echo "Значение присутствует в дереве";
-} else {
-  echo "Значения в дереве нет"; 
-}?>
-<br>
-</div>
-<div>
-Минимальное значение в дереве
-<?= var_dump($object->findMinReal());?>
-</div>
-<div>
-Удалил элемент с номером <?= $delete;?>
-<?php $object->deleteElement($delete);?>
-</div>
-<div>Минимальное значение в дереве 
+  <pre>
+    <?php print_r($object->treeTraversal());?>
+  </pre>
+  <div>
+    Поиск значения <?= $find ?> в дереве<br>
+    <?php 
+    if ($object->containsValueTraversing($find)) {
+      echo "Значение присутствует в дереве";
+    } else {
+      echo "Значения в дереве нет"; 
+    }?>
+  <br>
+  </div>
+  <div>
+    Минимальное значение в дереве
+    <?= var_dump($object->findMinReal());?>
+  </div>
+  <div>
+    Удалил элемент с номером <?= $delete;?>
+    <?php $object->deleteElement($delete);?>
+  </div>
+  <div>Минимальное значение в дереве 
 
 
-<?= var_dump($object->findMinReal());?>
-</div>
+    <?= var_dump($object->findMinReal());?>
+  </div>
 
-<div>Количество элементов в дереве:
-<?= var_dump($object->countTraversingReal());?>
-</div>
-<?=print_r($object->drawTree($object->treeTraversal())); ?>
+  <div>Количество элементов в дереве:
+    <?= var_dump($object->countTraversingReal());?>
+  </div>
+  <div>
+    <?=print_r($object->drawTree($object->treeTraversal())); ?>
+  </div>
 </body>
 </html>
